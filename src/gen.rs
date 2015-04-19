@@ -37,19 +37,15 @@ impl<'a, T> Iterator for Iter<'a, T> {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        println!("Getting the next value.");
 
         if self.disconnected {
             None
         } else {
-            println!("Trying to receive some.");
             match self.gen.rx.try_recv() {
                 Ok(t) => Some(t),
                 Err(mpsc::TryRecvError::Empty) => {
-                    println!("Queue is empty. Resuming coroutine.");
                     match self.gen.coro.resume() {
                         Ok(_) => {
-                            println!("Coroutine resumed. Now we are bound to wait for a result.");
                             match self.gen.rx.recv() {
                                 Ok(t) => Some(t),
                                 Err(_) => { self.disconnected = true; None }
