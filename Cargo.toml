@@ -2,3 +2,7 @@
 name = "generator"
 version = "0.1.0"
 authors = ["Victor-Nicolae Savu <victor.nicolae.savu@gmail.com>"]
+
+[dependencies]
+coroutine = "*"
+
