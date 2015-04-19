@@ -5,12 +5,12 @@ fn main() {
     use generator::gen;
 
     println!("Creating the generator.");
-    let c = gen::Generator::<i64>::new(|m| {
+    let c = gen::Generator::<i64>::new(|s| {
         println!("Entered the generator lambda");
         let mut i = 0i64;
         loop {
             println!("Yielding form the generator lambda.");
-            m.y(i);
+            s.sched(i);
             i = i+1;
         }
     });

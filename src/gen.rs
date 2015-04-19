@@ -6,16 +6,16 @@ pub struct Generator<T> {
     rx: mpsc::Receiver<T>,
 }
 
-pub struct Messenger<T> {
+pub struct Scheduler<T> {
     tx: mpsc::Sender<T>,
 }
 
-impl<T> Messenger<T> {
+impl<T> Scheduler<T> {
     pub fn new(tx: mpsc::Sender<T>) -> Self {
-        Messenger{tx: tx}
+        Scheduler{tx: tx}
     }
 
-    pub fn y(&self, t: T) {
+    pub fn sched(&self, t: T) {
         self.tx.send(t).unwrap();
         coroutine::sched();
     }
@@ -65,9 +65,9 @@ impl<'a, T> Iterator for Iter<'a, T> {
 }
 
 impl<T: Send + 'static> Generator<T> {
-    pub fn new<F>(f: F) -> Self  where F: Fn(Messenger<T>) + Send + 'static {
+    pub fn new<F>(f: F) -> Self  where F: Fn(Scheduler<T>) + Send + 'static {
         let (tx, rx) = mpsc::channel::<T>();
-        let m = Messenger::<T>::new(tx);
+        let m = Scheduler::<T>::new(tx);
         let coro = coroutine::spawn(move || f(m)) ;
         Generator{ coro: coro, rx: rx }
     }

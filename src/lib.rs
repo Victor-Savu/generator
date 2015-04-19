@@ -49,10 +49,10 @@ mod tests {
 
 #[test]
     fn counter() {
-        let c = gen::Generator::<i64>::new(|m| {
+        let c = gen::Generator::<i64>::new(|s| {
             let mut i = 0i64;
             loop {
-                m.y(i);
+                s.sched(i);
                 i = i+1;
             }
         });
