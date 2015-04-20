@@ -62,4 +62,19 @@ mod tests {
         assert_eq!(v, w);
         assert!(true);
     }
+
+    #[test]
+    fn comm() {
+        let c = gen::Generator::<i64, i64>::new(|s| {
+            let mut i = 0i64;
+            while let Some(j) = s.sched(i) {
+                i = i + j;
+            }
+        });
+
+        let mut ci = c.iter();
+        assert!((0..10).map(move |i| ci.next_with(i).unwrap())
+                       .zip([0, 0, 1, 3, 6, 10, 15, 21, 28, 36].iter())
+                       .all(|(i, j)| i == *j));
+    }
 }

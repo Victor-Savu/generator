@@ -4,20 +4,27 @@ extern crate generator;
 fn main() {
     use generator::gen;
 
-    println!("Creating the generator.");
-    let c = gen::Generator::<i64>::new(|s| {
-        println!("Entered the generator lambda");
+    let c = gen::Generator::new(|s| {
         let mut i = 0i64;
         loop {
-            println!("Yielding form the generator lambda.");
             s.sched(i);
             i = i+1;
         }
     });
 
-    println!("Collecting 10 results.");
     let v: Vec<_> = c.iter().take(10).collect();
     let w: Vec<i64> = (0..10).collect();
     assert_eq!(v, w);
     assert!(true);
+
+    let c = gen::Generator::<i64, i64>::new(|s| {
+        let mut i = 0i64;
+        while let Some(j) = s.sched(i) {
+            i = i + j;
+        }
+    });
+
+
+    let mut ci = c.iter();
+    (0..10).map(|i| ci.next_with(i).unwrap())
 }
